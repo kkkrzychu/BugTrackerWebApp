@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, status
 from .models import BugCreate, BugResponse, BugUpdate
 from datetime import datetime
 
@@ -68,6 +68,16 @@ def update_bug(id: int, bug: BugUpdate):
             return bug_update
         
     raise HTTPException(status_code=404, detail="Item not found")
+
+@app.delete("/bugs/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_bug(id: int):
+
+    for bug in bugs:
+        if bug["id"] == id:
+            bugs.remove(bug)
+            return
+
+    raise HTTPException(status_code=404, detail="Item Not Found")
 
 def get_next_id():
 

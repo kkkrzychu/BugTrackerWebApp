@@ -64,6 +64,13 @@ delete_bug_sql = """
 
 # conn.close()
 
+def init_db():
+    conn = sqlite3.connect("bugtracker.db")
+
+    conn.execute(create_table_sql)
+
+    conn.close()
+
 def get_bugs():
     conn = sqlite3.connect("bugtracker.db")
     conn.row_factory = sqlite3.Row

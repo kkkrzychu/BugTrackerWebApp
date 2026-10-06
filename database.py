@@ -99,7 +99,7 @@ def create_bug(title: str, description: str, priority: str):
     return get_bug(new_id)
 
 def update_bug(id: int , title: str | None = None, description: str | None = None, priority: str | None = None):
-    
+
     old_bug = get_bug(id)
 
     if old_bug is None:
@@ -124,7 +124,19 @@ def update_bug(id: int , title: str | None = None, description: str | None = Non
 
     return get_bug(id)
 
+def delete_bug(id: int):
+    conn = sqlite3.connect("bugtracker.db")
+
+    cursor = conn.execute(delete_bug_sql, (id,))
+    conn.commit()
+
+    count = cursor.rowcount
+
+    conn.close()
+
+    return count > 0
+
 #get_bugs()
 #get_bug(5)
-bug = update_bug(5, "tylkotytulmasiezmienic")
-print(dict(bug))
+#bug = update_bug(5, "tylkotytulmasiezmienic")
+#print(dict(bug))

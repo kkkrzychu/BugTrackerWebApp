@@ -79,7 +79,13 @@ def get_bugs():
     wynik = cursor.fetchall()
     
     conn.close()
-    return wynik
+
+    wynik_dict = []
+
+    for row in wynik:
+        wynik_dict.append(dict(row))
+
+    return wynik_dict
 
 def get_bug(id: int):
 

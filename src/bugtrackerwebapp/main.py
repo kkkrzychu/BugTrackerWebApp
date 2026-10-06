@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, status
 from .models import BugCreate, BugResponse, BugUpdate
 from datetime import datetime
+from . import database
 
 app = FastAPI()
 
@@ -18,7 +19,7 @@ bugs = [
 
 @app.get("/bugs", response_model = list[BugResponse])
 def get_bugs():
-    return bugs
+    return database.get_bugs()
 
 @app.get("/bugs/{id}", response_model = BugResponse)
 def get_bug(id: int):

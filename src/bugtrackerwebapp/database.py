@@ -43,13 +43,6 @@ delete_bug_sql = """
             DELETE FROM bugs WHERE id = ?
 """
 
-def init_db():
-    conn = sqlite3.connect("bugtracker.db")
-
-    conn.execute(create_table_sql)
-
-    conn.close()
-
 def get_connection():
 
     conn = sqlite3.connect("bugtracker.db")
@@ -57,10 +50,18 @@ def get_connection():
 
     return conn
 
-def get_bugs():
-    conn = sqlite3.connect("bugtracker.db")
-    conn.row_factory = sqlite3.Row
+def init_db():
 
+    conn = get_connection()
+
+    conn.execute(create_table_sql)
+
+    conn.close()
+
+def get_bugs():
+
+    conn = get_connection()
+    
     cursor = conn.execute("""SELECT * FROM bugs;""")
     wynik = cursor.fetchall()
     
@@ -75,8 +76,7 @@ def get_bugs():
 
 def get_bug(id: int):
 
-    conn = sqlite3.connect("bugtracker.db")
-    conn.row_factory = sqlite3.Row
+    conn = get_connection()
 
     cursor = conn.execute("""SELECT * FROM bugs WHERE id = ?""", (id,))
     wynik = cursor.fetchone()
@@ -91,7 +91,8 @@ def get_bug(id: int):
     return wynik_dict
 
 def create_bug(title: str, description: str, priority: str):
-    conn = sqlite3.connect("bugtracker.db")
+    
+    conn = get_connection()
 
     now = datetime.now()
 
@@ -110,7 +111,8 @@ def update_bug(id: int , title: str | None = None, description: str | None = Non
     if old_bug is None:
         return None
 
-    conn = sqlite3.connect("bugtracker.db")
+    conn = get_connection()
+
     now = datetime.now()
 
     if title is None:
@@ -130,7 +132,8 @@ def update_bug(id: int , title: str | None = None, description: str | None = Non
     return get_bug(id)
 
 def delete_bug(id: int):
-    conn = sqlite3.connect("bugtracker.db")
+
+    conn = get_connection()
 
     cursor = conn.execute(delete_bug_sql, (id,))
     conn.commit()

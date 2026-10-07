@@ -4,6 +4,7 @@ from datetime import datetime
 from . import database
 
 app = FastAPI()
+database.init_db()
 
 bugs = [
     {
@@ -31,24 +32,10 @@ def get_bug(id: int):
 
     return bug
     
-@app.post("/bugs")
-def create_bug(bug: BugCreate):
+@app.post("/bugs", response_model = BugResponse)
+def create_bug(bug: BugCreate):  
 
-    now = datetime.now()
-
-    new_bug = {
-        "title": bug.title,
-        "description": bug.description,
-        "priority": bug.priority,
-        "status": "Proposed",
-        "id": get_next_id(),
-        "created_at": now,
-        "updated_at": now
-        }
-
-    bugs.append(new_bug)
-
-    return new_bug
+    return database.create_bug(bug.title, bug.description, bug.priority)
 
 @app.patch("/bugs/{id}")
 def update_bug(id: int, bug: BugUpdate):

@@ -25,7 +25,7 @@ def get_bugs():
 @app.get("/bugs/{id}", response_model = BugResponse)
 def get_bug(id: int):
     
-    bug =  database.get_bug(id)
+    bug = database.get_bug(id)
 
     if bug is None: 
         raise HTTPException(status_code=404, detail="Item not found")
@@ -37,37 +37,26 @@ def create_bug(bug: BugCreate):
 
     return database.create_bug(bug.title, bug.description, bug.priority)
 
-@app.patch("/bugs/{id}")
+@app.patch("/bugs/{id}", response_model = BugResponse)
 def update_bug(id: int, bug: BugUpdate):
 
-    now = datetime.now()
+    updated_bug = database.update_bug(id, bug.title, bug.description, bug.priority)
 
-    for bug_update in bugs:
-        if bug_update["id"] == id:
-            if bug.title is not None:
-                bug_update["title"] = bug.title
+    if updated_bug is None:
+        raise HTTPException(status_code=404, detail="Item not found")
 
-            if bug.description is not None:
-                bug_update["description"] = bug.description
-
-            if bug.priority is not None:
-                bug_update["priority"] = bug.priority
-
-            bug_update["updated_at"] = now
-            return bug_update
-        
-    raise HTTPException(status_code=404, detail="Item not found")
+    return updated_bug
 
 @app.delete("/bugs/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_bug(id: int):
 
-    for bug in bugs:
-        if bug["id"] == id:
-            bugs.remove(bug)
-            return
+    is_bug_deleted = database.delete_bug(id)
 
-    raise HTTPException(status_code=404, detail="Item Not Found")
-
+    if is_bug_deleted is False:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    return
+    
 def get_next_id():
 
     existing_ids = []

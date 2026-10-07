@@ -43,33 +43,19 @@ delete_bug_sql = """
             DELETE FROM bugs WHERE id = ?
 """
 
-# conn = sqlite3.connect("bugtracker.db")
-# conn.execute(create_table_sql)
-
-
-# conn.execute(insert_into_table,(now, now))
-# conn.commit()
-
-# cursor = conn.execute(delete_bug, (2,))
-# conn.commit()
-# print(cursor.rowcount)
-
-# # cursor = conn.execute(update_bug, ('In Progress', now, 1))
-# # conn.commit()
-# # print(cursor.rowcount)
-
-# cursor = conn.execute("""SELECT * FROM bugs;""")
-# wynik = cursor.fetchall()
-# print(wynik)
-
-# conn.close()
-
 def init_db():
     conn = sqlite3.connect("bugtracker.db")
 
     conn.execute(create_table_sql)
 
     conn.close()
+
+def get_connection():
+
+    conn = sqlite3.connect("bugtracker.db")
+    conn.row_factory = sqlite3.Row
+
+    return conn
 
 def get_bugs():
     conn = sqlite3.connect("bugtracker.db")
@@ -154,8 +140,3 @@ def delete_bug(id: int):
     conn.close()
 
     return count > 0
-
-#get_bugs()
-#get_bug(5)
-#bug = update_bug(5, "tylkotytulmasiezmienic")
-#print(dict(bug))

@@ -94,9 +94,15 @@ def get_bug(id: int):
 
     cursor = conn.execute("""SELECT * FROM bugs WHERE id = ?""", (id,))
     wynik = cursor.fetchone()
-
+    
     conn.close()
-    return wynik
+
+    if wynik is None:
+        return None
+    
+    wynik_dict = dict(wynik)
+
+    return wynik_dict
 
 def create_bug(title: str, description: str, priority: str):
     conn = sqlite3.connect("bugtracker.db")

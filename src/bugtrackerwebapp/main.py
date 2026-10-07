@@ -24,12 +24,13 @@ def get_bugs():
 @app.get("/bugs/{id}", response_model = BugResponse)
 def get_bug(id: int):
     
-    for bug in bugs:
-        if bug["id"] == id:
-            return bug
-        
-    raise HTTPException(status_code=404, detail="Item not found")
+    bug =  database.get_bug(id)
 
+    if bug is None: 
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    return bug
+    
 @app.post("/bugs")
 def create_bug(bug: BugCreate):
 

@@ -1,5 +1,6 @@
 import sqlite3
 from datetime import datetime
+from pathlib import Path
 
 create_table_sql = """
     CREATE TABLE IF NOT EXISTS bugs (
@@ -43,9 +44,11 @@ delete_bug_sql = """
             DELETE FROM bugs WHERE id = ?
 """
 
+DB_PATH = Path(__file__).parent / "bugtracker.db"
+
 def get_connection():
 
-    conn = sqlite3.connect("bugtracker.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
 
     return conn

@@ -19,7 +19,7 @@ def get_bug(id: int):
 
     return bug
     
-@app.post("/bugs", response_model = BugResponse)
+@app.post("/bugs", response_model = BugResponse, status_code=status.HTTP_201_CREATED)
 def create_bug(bug: BugCreate):  
 
     return database.create_bug(bug.title, bug.description, bug.priority)

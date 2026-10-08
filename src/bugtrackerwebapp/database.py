@@ -9,8 +9,8 @@ create_table_sql = """
         description TEXT,
         priority TEXT,
         status TEXT,
-        created_at datetime,
-        updated_at datetime
+        created_at TEXT,
+        updated_at TEXT
                         );
                     """
 
@@ -97,7 +97,7 @@ def create_bug(title: str, description: str, priority: str):
     
     conn = get_connection()
 
-    now = datetime.now()
+    now = datetime.now().isoformat()
 
     cursor = conn.execute(insert_into_table_sql, (title, description, priority, now, now))
     new_id = cursor.lastrowid
@@ -116,7 +116,7 @@ def update_bug(id: int , title: str | None = None, description: str | None = Non
 
     conn = get_connection()
 
-    now = datetime.now()
+    now = datetime.now().isoformat()
 
     if title is None:
         title = old_bug["title"]

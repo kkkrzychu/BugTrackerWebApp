@@ -40,15 +40,24 @@ def test_create_bug():
                 "priority": "High" 
                 }
     post_response = client.post("/bugs", json = bug_data)
-    created_bug = post_response.json()
-    bug_id = created_bug["id"]
+    created_bug = post_response.json()    
 
     assert post_response.status_code == 201
-    assert created_bug["title"] == "Login error"
+
+    bug_id = created_bug["id"]
+
     assert created_bug["id"] > 0
+    assert created_bug["title"] == bug_data["title"]
+    assert created_bug["description"] == bug_data["description"]
+    assert created_bug["priority"] == bug_data["priority"]    
     assert created_bug["status"] == "Proposed"
 
     get_response = client.get(f"/bugs/{bug_id}")
+    fetched_bug = get_response.json()
 
     assert get_response.status_code == 200
-    assert get_response.json()["id"] == bug_id
+    assert fetched_bug["id"] == bug_id
+    assert fetched_bug["title"] == bug_data["title"]
+    assert fetched_bug["description"] == bug_data["description"]
+    assert fetched_bug["priority"] == bug_data["priority"]
+    assert fetched_bug["status"] == "Proposed"

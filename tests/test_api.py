@@ -61,3 +61,37 @@ def test_create_bug():
     assert fetched_bug["description"] == bug_data["description"]
     assert fetched_bug["priority"] == bug_data["priority"]
     assert fetched_bug["status"] == "Proposed"
+
+def test_update_bug():
+       
+       bug_data = {
+                    "title": "Login error",
+                    "description": "Login button does not work",
+                    "priority": "High" 
+                    }
+
+       updated_priority = "Low"
+
+       post_response = client.post("/bugs", json = bug_data)       
+
+       assert post_response.status_code == 201
+
+       bug_id = post_response.json()["id"]
+
+       patch_response = client.patch(f"/bugs/{bug_id}", json = {"priority": updated_priority})
+       updated_bug = patch_response.json() 
+
+       assert patch_response.status_code == 200
+       assert updated_bug["title"] == bug_data["title"]
+       assert updated_bug["description"] == bug_data["description"]
+       assert updated_bug["priority"] == updated_priority
+
+       get_response = client.get(f"/bugs/{bug_id}")
+
+       assert get_response.status_code == 200
+
+       fetched_bug = get_response.json()
+
+       assert fetched_bug["priority"] == updated_priority
+       assert fetched_bug["title"] == bug_data["title"]
+       assert fetched_bug["description"] == bug_data["description"]

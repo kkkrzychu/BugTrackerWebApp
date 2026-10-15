@@ -121,3 +121,20 @@ def test_delete_bug():
     second_delete_response = client.delete(f"/bugs/{bug_id}")
 
     assert second_delete_response.status_code == 404
+
+def test_create_bug_invalid_priority():
+     
+    bug_data = {
+                    "title": "Login error",
+                    "description": "Login button does not work",
+                    "priority": "Critical" 
+                    }
+
+    post_response = client.post("/bugs", json = bug_data)
+
+    assert post_response.status_code == 422
+
+    get_response = client.get("/bugs")
+
+    assert get_response.status_code == 200
+    assert get_response.json() == []

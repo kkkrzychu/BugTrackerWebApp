@@ -95,3 +95,29 @@ def test_update_bug():
        assert fetched_bug["priority"] == updated_priority
        assert fetched_bug["title"] == bug_data["title"]
        assert fetched_bug["description"] == bug_data["description"]
+
+def test_delete_bug():
+
+    bug_data = {
+                "title": "Login error",
+                "description": "Login button does not work",
+                "priority": "High" 
+                }
+
+    post_response = client.post("/bugs", json = bug_data)
+
+    assert post_response.status_code == 201
+
+    bug_id = post_response.json()["id"]
+
+    first_delete_response = client.delete(f"/bugs/{bug_id}")
+
+    assert first_delete_response.status_code == 204
+
+    get_response = client.get(f"/bugs/{bug_id}")
+
+    assert get_response.status_code == 404
+
+    second_delete_response = client.delete(f"/bugs/{bug_id}")
+
+    assert second_delete_response.status_code == 404

@@ -18,12 +18,30 @@ def prepare_test_db(tmp_path):
 
     database.DB_PATH = original_db
 
+@pytest.fixture
+def sample_bug_data():
+
+    return {
+        "title": "Login error",
+        "description": "Login button does not work",
+        "priority": "High"
+    }
+
+@pytest.fixture
+def created_bug(sample_bug_data):
+
+    post_response = client.post("/bugs", json = sample_bug_data)
+
+    assert post_response.status_code == 201
+
+    return post_response.json()
+
 def test_get_bugs():
 
     response = client.get("/bugs")
 
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    assert response.json() == []
 
 def test_get_nonexistent_bug():
 
@@ -62,28 +80,20 @@ def test_create_bug():
     assert fetched_bug["priority"] == bug_data["priority"]
     assert fetched_bug["status"] == "Proposed"
 
-def test_update_bug():
+def test_update_bug(created_bug, sample_bug_data):       
        
-       bug_data = {
-                    "title": "Login error",
-                    "description": "Login button does not work",
-                    "priority": "High" 
-                    }
-
        updated_priority = "Low"
-
-       post_response = client.post("/bugs", json = bug_data)       
-
-       assert post_response.status_code == 201
-
-       bug_id = post_response.json()["id"]
+       
+       bug_id = created_bug["id"]
 
        patch_response = client.patch(f"/bugs/{bug_id}", json = {"priority": updated_priority})
-       updated_bug = patch_response.json() 
-
+       
        assert patch_response.status_code == 200
-       assert updated_bug["title"] == bug_data["title"]
-       assert updated_bug["description"] == bug_data["description"]
+       
+       updated_bug = patch_response.json() 
+       
+       assert updated_bug["title"] == sample_bug_data["title"]
+       assert updated_bug["description"] == sample_bug_data["description"]
        assert updated_bug["priority"] == updated_priority
 
        get_response = client.get(f"/bugs/{bug_id}")
@@ -93,22 +103,12 @@ def test_update_bug():
        fetched_bug = get_response.json()
 
        assert fetched_bug["priority"] == updated_priority
-       assert fetched_bug["title"] == bug_data["title"]
-       assert fetched_bug["description"] == bug_data["description"]
+       assert fetched_bug["title"] == sample_bug_data["title"]
+       assert fetched_bug["description"] == sample_bug_data["description"]
 
-def test_delete_bug():
+def test_delete_bug(created_bug):
 
-    bug_data = {
-                "title": "Login error",
-                "description": "Login button does not work",
-                "priority": "High" 
-                }
-
-    post_response = client.post("/bugs", json = bug_data)
-
-    assert post_response.status_code == 201
-
-    bug_id = post_response.json()["id"]
+    bug_id = created_bug["id"]
 
     first_delete_response = client.delete(f"/bugs/{bug_id}")
 
@@ -159,19 +159,11 @@ def test_create_bug_invalid_data(bug_data):
     assert get_response.status_code == 200
     assert get_response.json() == []
 
-def test_update_bug_invalid_priority():
+def test_update_bug_invalid_priority(created_bug, sample_bug_data):
 
-    bug_data = {
-                "title": "Login error",
-                "description": "Login button does not work",
-                "priority": "High" 
-                }
     updated_priority = "Critical"
-    post_response = client.post("/bugs", json = bug_data) 
-    
-    assert post_response.status_code == 201
-    
-    bug_id = post_response.json()["id"]
+        
+    bug_id = created_bug["id"]
 
     patch_response = client.patch(f"/bugs/{bug_id}", json = {"priority": updated_priority})
 
@@ -183,9 +175,9 @@ def test_update_bug_invalid_priority():
 
     fetched_bug = get_response.json()
 
-    assert fetched_bug["title"] == bug_data["title"]
-    assert fetched_bug["description"] == bug_data["description"]
-    assert fetched_bug["priority"] == bug_data["priority"]
+    assert fetched_bug["title"] == sample_bug_data["title"]
+    assert fetched_bug["description"] == sample_bug_data["description"]
+    assert fetched_bug["priority"] == sample_bug_data["priority"]
 
 def test_update_nonexistent_bug():
 
@@ -193,3 +185,32 @@ def test_update_nonexistent_bug():
 
     assert patch_response.status_code == 404
     assert patch_response.json() == {"detail": "Item not found"}
+
+def test_get_multiple_bugs():
+
+    first_bug_data = {
+        "title": "First Bug Title",
+        "description": "First Bug Description",
+        "priority": "Low"
+    }
+
+    second_bug_data = {
+        "title": "Second Bug Title",
+        "description": "Second Bug Description",
+        "priority": "Low"
+    }
+
+    first_post_response = client.post("/bugs", json = first_bug_data)
+    second_post_response = client.post("/bugs", json = second_bug_data)
+
+    assert first_post_response.status_code == 201
+    assert second_post_response.status_code == 201
+
+    get_response = client.get("/bugs")
+
+    assert len(get_response.json()) == 2
+
+    for bug in get_response:
+        i = 1
+        bug.json()["id"] == i
+        i = i+1

@@ -122,13 +122,33 @@ def test_delete_bug():
 
     assert second_delete_response.status_code == 404
 
-def test_create_bug_invalid_priority():
-     
-    bug_data = {
-                    "title": "Login error",
-                    "description": "Login button does not work",
-                    "priority": "Critical" 
-                    }
+bug_data_title_too_short = {
+                            "title": "aa",
+                            "description": "Valid bug description",
+                            "priority": "Low" 
+                            }
+
+bug_data_description_too_short = {
+                            "title": "Valid bug title",
+                            "description": "aa",
+                            "priority": "Low" 
+                                }
+
+bug_data_invalid_bug_priority = {
+                            "title": "Valid bug title",
+                            "description": "Valid bug description",
+                            "priority": "Invalid bug priority" 
+                                }
+
+@pytest.mark.parametrize("bug_data",
+                        [
+                            bug_data_title_too_short,
+                            bug_data_description_too_short, 
+                            bug_data_invalid_bug_priority
+                        ],
+                        ids = ["short-title", "short-description", "invalid-priority"]
+                    )
+def test_create_bug_invalid_data(bug_data):
 
     post_response = client.post("/bugs", json = bug_data)
 
@@ -138,3 +158,4 @@ def test_create_bug_invalid_priority():
 
     assert get_response.status_code == 200
     assert get_response.json() == []
+    

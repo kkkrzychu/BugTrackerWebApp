@@ -186,4 +186,10 @@ def test_update_bug_invalid_priority():
     assert fetched_bug["title"] == bug_data["title"]
     assert fetched_bug["description"] == bug_data["description"]
     assert fetched_bug["priority"] == bug_data["priority"]
-    
+
+def test_update_nonexistent_bug():
+
+    patch_response = client.patch("/bugs/9999999999", json = {"priority": "Low"})
+
+    assert patch_response.status_code == 404
+    assert patch_response.json() == {"detail": "Item not found"}

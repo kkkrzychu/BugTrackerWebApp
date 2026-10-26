@@ -208,9 +208,19 @@ def test_get_multiple_bugs():
 
     get_response = client.get("/bugs")
 
-    assert len(get_response.json()) == 2
+    assert get_response.status_code == 200
 
-    for bug in get_response:
-        i = 1
-        bug.json()["id"] == i
-        i = i+1
+    fetched_bugs = get_response.json()
+
+    assert len(fetched_bugs) == 2    
+
+    fetched_ids = []
+
+    for bug in fetched_bugs:
+        fetched_ids.append(bug["id"])
+
+    first_id = first_post_response.json()["id"]
+    second_id = second_post_response.json()["id"]
+
+    assert first_id in fetched_ids
+    assert second_id in fetched_ids

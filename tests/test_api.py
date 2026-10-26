@@ -82,29 +82,29 @@ def test_create_bug():
 
 def test_update_bug(created_bug, sample_bug_data):       
        
-       updated_priority = "Low"
+    updated_priority = "Low"
        
-       bug_id = created_bug["id"]
+    bug_id = created_bug["id"]
 
-       patch_response = client.patch(f"/bugs/{bug_id}", json = {"priority": updated_priority})
+    patch_response = client.patch(f"/bugs/{bug_id}", json = {"priority": updated_priority})
        
-       assert patch_response.status_code == 200
+    assert patch_response.status_code == 200
        
-       updated_bug = patch_response.json() 
+    updated_bug = patch_response.json() 
        
-       assert updated_bug["title"] == sample_bug_data["title"]
-       assert updated_bug["description"] == sample_bug_data["description"]
-       assert updated_bug["priority"] == updated_priority
+    assert updated_bug["title"] == sample_bug_data["title"]
+    assert updated_bug["description"] == sample_bug_data["description"]
+    assert updated_bug["priority"] == updated_priority
 
-       get_response = client.get(f"/bugs/{bug_id}")
+    get_response = client.get(f"/bugs/{bug_id}")
 
-       assert get_response.status_code == 200
+    assert get_response.status_code == 200
 
-       fetched_bug = get_response.json()
+    fetched_bug = get_response.json()
 
-       assert fetched_bug["priority"] == updated_priority
-       assert fetched_bug["title"] == sample_bug_data["title"]
-       assert fetched_bug["description"] == sample_bug_data["description"]
+    assert fetched_bug["priority"] == updated_priority
+    assert fetched_bug["title"] == sample_bug_data["title"]
+    assert fetched_bug["description"] == sample_bug_data["description"]
 
 def test_delete_bug(created_bug):
 
@@ -224,3 +224,51 @@ def test_get_multiple_bugs():
 
     assert first_id in fetched_ids
     assert second_id in fetched_ids
+
+def test_update_bug_valid_status(created_bug, sample_bug_data):
+
+    updated_status = "In Progress"
+    
+    bug_id = created_bug["id"]
+
+    patch_response = client.patch(f"/bugs/{bug_id}", json = {"status": updated_status})
+
+    assert patch_response.status_code == 200
+
+    updated_bug = patch_response.json()
+    
+    assert updated_bug["title"] == sample_bug_data["title"]
+    assert updated_bug["description"] == sample_bug_data["description"]
+    assert updated_bug["status"] == updated_status
+
+    get_response = client.get(f"/bugs/{bug_id}")
+    
+    assert get_response.status_code == 200
+    
+    fetched_bug = get_response.json()
+    
+    assert fetched_bug["status"] == updated_status
+    assert fetched_bug["title"] == sample_bug_data["title"]
+    assert fetched_bug["description"] == sample_bug_data["description"]
+    assert fetched_bug["priority"] == sample_bug_data["priority"]
+
+def test_update_bug_invalid_status(created_bug, sample_bug_data):
+
+    updated_status = "Closed"
+    
+    bug_id = created_bug["id"]
+
+    patch_response = client.patch(f"/bugs/{bug_id}", json = {"status": updated_status})
+
+    assert patch_response.status_code == 422
+
+    get_response = client.get(f"/bugs/{bug_id}")
+    
+    assert get_response.status_code == 200
+    
+    fetched_bug = get_response.json()
+    
+    assert fetched_bug["status"] == created_bug["status"]
+    assert fetched_bug["title"] == sample_bug_data["title"]
+    assert fetched_bug["description"] == sample_bug_data["description"]
+    assert fetched_bug["priority"] == sample_bug_data["priority"]

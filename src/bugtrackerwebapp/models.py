@@ -30,4 +30,6 @@ class BugUpdate(BugBase):
     title: str | None = Field(default=None, min_length=3, max_length=100)
     description: str | None = Field(default=None, min_length=5)
     priority: Literal["Low", "Medium", "High"] | None = None
-
+    status: Literal["Proposed", "In Progress", "Resolved"] | None = None
+    # Z tym None = None to jest tak, że 'None' - parametr może być str albo wartością None,
+    # a '= None', to że jeśli nie podam argumentu, to domyślnie otrzyma on wartość None 

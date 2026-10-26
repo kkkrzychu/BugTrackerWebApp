@@ -36,7 +36,8 @@ update_bug_sql = """
         SET title = ?,
             description = ?,
             priority = ?,
-            updated_at = ?
+            updated_at = ?,
+            status = ?
         WHERE id = ?;
             """
 
@@ -107,7 +108,7 @@ def create_bug(title: str, description: str, priority: str):
 
     return get_bug(new_id)
 
-def update_bug(id: int , title: str | None = None, description: str | None = None, priority: str | None = None):
+def update_bug(id: int , title: str | None = None, description: str | None = None, priority: str | None = None, status: str | None = None):
 
     old_bug = get_bug(id)
 
@@ -126,8 +127,11 @@ def update_bug(id: int , title: str | None = None, description: str | None = Non
 
     if priority is None:
         priority = old_bug["priority"]
+
+    if status is None:
+        status = old_bug["status"]
     
-    conn.execute(update_bug_sql,(title, description, priority, now, id))
+    conn.execute(update_bug_sql,(title, description, priority, now, status, id))
     conn.commit()
     
     conn.close()

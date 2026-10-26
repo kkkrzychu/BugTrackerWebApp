@@ -27,7 +27,7 @@ def create_bug(bug: BugCreate):
 @app.patch("/bugs/{id}", response_model = BugResponse)
 def update_bug(id: int, bug: BugUpdate):
 
-    updated_bug = database.update_bug(id, bug.title, bug.description, bug.priority)
+    updated_bug = database.update_bug(id, bug.title, bug.description, bug.priority, bug.status)
 
     if updated_bug is None:
         raise HTTPException(status_code=404, detail="Item not found")

@@ -1,0 +1,16 @@
+.bug-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+#refresh-button, #add-button {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#title, #description, #priority {
+    display: block;
+    margin-bottom: 5px;
+}

@@ -18,15 +18,15 @@ async function loadBugs(){
         bugCard.classList.add("bug-card");
 
         const title = document.createElement("h3");        
-        title.textContent = bug.title;
+        title.textContent = `Tytuł: ${bug.title}`;
         bugCard.appendChild(title);        
 
         const priority = document.createElement("p");
-        priority.textContent = bug.priority;
+        priority.textContent = `Priorytet: ${bug.priority}`;
         bugCard.appendChild(priority);
 
         const status = document.createElement("p");
-        status.textContent = bug.status;
+        status.textContent = `Status: ${bug.status}`;
         bugCard.appendChild(status);
 
         bugsList.appendChild(bugCard);

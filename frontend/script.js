@@ -33,9 +33,45 @@ async function loadBugs(){
     }
 }
 
+async function createBug(){
+     
+    const titleInput = document.getElementById("title");
+    console.log(titleInput.value);
+
+    const descriptionInput = document.getElementById("description");
+    console.log(descriptionInput.value);
+
+    const priorityInput = document.getElementById("priority");
+    console.log(priorityInput.value);    
+    
+
+    const bugData = {
+        title: titleInput.value,
+        description: descriptionInput.value,
+        priority: priorityInput.value
+    };
+
+    const response = await fetch("http://127.0.0.1:8000/bugs",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json" //informujemy backend, że wysyłamy JSON
+        },
+        body: JSON.stringify(bugData) //zamienamy obiekt JS na tekst JSON
+    })
+
+    if (response.ok) {
+        console.log("Zgłoszenie dodane");
+    }
+    else{
+        console.log("Nie udało się dodać zgłoszenia")
+    }
+}
+
 loadBugs()
 
 const refreshButton = document.getElementById("refresh-button");
-
 refreshButton.addEventListener("click", loadBugs);
+
+const addButton = document.getElementById("add-button")
+addButton.addEventListener("click", createBug)
 

@@ -14,3 +14,7 @@
     display: block;
     margin-bottom: 5px;
 }
+
+#form-message {
+    white-space: pre-line;
+}

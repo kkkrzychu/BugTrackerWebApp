@@ -12,6 +12,7 @@
     <input type="text" id="title" placeholder="Tytuł buga">
     <textarea id="description" placeholder="Opis buga"></textarea>
     <select id="priority">
+        <option value="" selected disabled>Wybierz prioritet</option>
         <option value="Low">Low</option>
         <option value="Medium">Medium</option>
         <option value="High">High</option>
@@ -19,7 +20,9 @@
 </div>
 
 <button id="add-button">Dodaj zgłoszenie</button>
+<p id="form-message"></p>
 <button id="refresh-button">Odśwież zgłoszenia</button>
+
 <div id="bugs-list"></div>
 
 <script src="script.js"></script>

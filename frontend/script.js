@@ -141,8 +141,9 @@ function editBug(bug){
     const priorityInput = document.getElementById("priority");
     priorityInput.value = bug.priority;
 
-   // const statusInput = document.getElementById("status");
-    //statusInput = bug.status;    
+    const statusInput = document.getElementById("status");
+    statusInput.disabled = false;
+    statusInput.value = bug.status;    
 }
 
 async function updateBug() {
@@ -175,8 +176,11 @@ async function updateBug() {
         titleInput.value = "";
         descriptionInput.value = "";
         priorityInput.value = "";
+        statusInput.value = "Proposed";
         formMessage.textContent = "Zgłoszenie zaktualizowane";
-        addButton.textContent = "Dodaj zgłoszenie";
+        addButton.textContent = "Dodaj zgłoszenie";  
+        statusInput.disabled = true;    
+        editingBugId = null;  
     }
     else{
         //console.log("Nie udało się dodać zgłoszenia");
@@ -192,8 +196,7 @@ async function updateBug() {
         for (const message of errorData.detail){
             formMessage.textContent += message.msg + "\n";            
         }
-    }
-    editingBugId = null;
+    }    
 }
 
 loadBugs()

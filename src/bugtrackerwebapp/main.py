@@ -2,16 +2,33 @@ from fastapi import FastAPI, HTTPException, status
 from .models import BugCreate, BugResponse, BugUpdate
 from . import database
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+import os
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    database.init_db()
+
+    yield
+
+app = FastAPI(lifespan=lifespan)
+
+allowed_origins = os.getenv(
+    "BUGTRACKER_ALLOWED_ORIGINS",
+    "http://127.0.0.1:5500"
+).split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5500"],
+    allow_origins=allowed_origins,
     allow_credentials=False,
     allow_methods=["GET", "POST", "PATCH", "DELETE"],
     allow_headers=["*"],
 )
-database.init_db()
+#database.init_db()
+# to tu sobie zakomentuję, no bo przecież robimy ten lifespan
+
+
 
 @app.get("/bugs", response_model = list[BugResponse])
 def get_bugs():

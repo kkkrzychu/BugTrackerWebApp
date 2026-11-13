@@ -1,4 +1,5 @@
 import sqlite3
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -45,7 +46,14 @@ delete_bug_sql = """
             DELETE FROM bugs WHERE id = ?
 """
 
-DB_PATH = Path(__file__).parent / "bugtracker.db"
+###DB_PATH = Path(__file__).parent / "bugtracker.db"
+
+DB_PATH = Path(
+    os.getenv(
+        "BUGTRACKER_DB_PATH",
+        str(Path(__file__).parent / "bugtracker.db")
+    )
+)
 
 def get_connection():
 

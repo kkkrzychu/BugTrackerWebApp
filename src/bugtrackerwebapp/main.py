@@ -1,9 +1,21 @@
+import os
+from contextlib import asynccontextmanager
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from .models import BugCreate, BugResponse, BugUpdate
 from . import database
-from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
-import os
+
+environment = os.getenv("BUGTRACKER_ENV", "development")
+if environment not in ("development", "production"):
+    raise ValueError(
+        "Invalid BUGTRACKER_ENV. "
+        "Expected 'development' or 'production'."
+    )
+print(f"Running in {environment} mode")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -11,12 +23,18 @@ async def lifespan(app: FastAPI):
 
     yield
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    debug=environment == "development"
+    )
 
-allowed_origins = os.getenv(
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv(
     "BUGTRACKER_ALLOWED_ORIGINS",
     "http://127.0.0.1:5500"
 ).split(",")
+]
 
 app.add_middleware(
     CORSMiddleware,
@@ -25,10 +43,6 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PATCH", "DELETE"],
     allow_headers=["*"],
 )
-#database.init_db()
-# to tu sobie zakomentuję, no bo przecież robimy ten lifespan
-
-
 
 @app.get("/bugs", response_model = list[BugResponse])
 def get_bugs():

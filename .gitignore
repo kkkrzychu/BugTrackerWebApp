@@ -2,11 +2,14 @@
 __pycache__/
 *.py[oc]
 build/
-dist/
 wheels/
 *.egg-info
 
 # Virtual environments
-.venv
+.venv/
 
-bugtracker.db/
+*.db
+.env
+
+# Build artifacts
+dist/

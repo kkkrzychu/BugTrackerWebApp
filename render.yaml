@@ -17,6 +17,9 @@ services:
       - key: BUGTRACKER_DB_PATH
         value: /tmp/bugtracker.db
 
+      - key: BUGTRACKER_ALLOWED_ORIGINS
+        value: "https://bugtracker-frontend-rk1b.onrender.com"
+
   - type: web
     name: bugtracker-frontend
     runtime: static

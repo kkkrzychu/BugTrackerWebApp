@@ -1,0 +1,19 @@
+
+services:
+  - type: web
+    name: bugtracker-api
+    runtime: python
+    plan: free
+
+    buildCommand: uv sync --locked --no-dev
+    startCommand: uv run uvicorn bugtrackerwebapp.main:app --host 0.0.0.0 --port $PORT
+
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.14.10"
+
+      - key: BUGTRACKER_ENV
+        value: production
+
+      - key: BUGTRACKER_DB_PATH
+        value: /tmp/bugtracker.db

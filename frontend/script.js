@@ -1,11 +1,12 @@
 const bugsList = document.getElementById("bugs-list");
 const formMessage = document.getElementById("form-message");
+const API_URL = "https://bugtracker-api-mxj2.onrender.com";
 
 let editingBugId = null;
 
 async function loadBugs(){    
 
-    const response = await fetch("http://127.0.0.1:8000/bugs");
+    const response = await fetch(`${API_URL}/bugs`);
 
     const bugs = await response.json();
 
@@ -84,7 +85,7 @@ async function createBug(){
     }    
         */
 
-    const response = await fetch("http://127.0.0.1:8000/bugs",{
+    const response = await fetch(`${API_URL}/bugs`,{
         method: "POST",
         headers: {
             "Content-Type": "application/json" //informujemy backend, że wysyłamy JSON
@@ -118,7 +119,7 @@ async function createBug(){
 }
 
 async function deleteBug(id){
-    const response = await fetch(`http://127.0.0.1:8000/bugs/${id}`,{
+    const response = await fetch(`${API_URL}/bugs/${id}`,{
         method: "DELETE"
     });
 
@@ -162,7 +163,7 @@ async function updateBug() {
         status: statusInput.value
     };
 
-    const response =  await fetch(`http://127.0.0.1:8000/bugs/${editingBugId}`,{
+    const response =  await fetch(`${API_URL}/bugs/${editingBugId}`,{
         method: "PATCH",
         headers: {
             "Content-Type": "application/json" //informujemy backend, że wysyłamy JSON

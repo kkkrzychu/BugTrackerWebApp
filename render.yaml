@@ -1,4 +1,3 @@
-
 services:
   - type: web
     name: bugtracker-api
@@ -17,3 +16,8 @@ services:
 
       - key: BUGTRACKER_DB_PATH
         value: /tmp/bugtracker.db
+
+  - type: web
+    name: bugtracker-frontend
+    runtime: static
+    staticPublishPath: ./frontend
